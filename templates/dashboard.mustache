@@ -1,0 +1,23 @@
+{{#showintrovideo}}
+    <div class="text-center">
+        <iframe src='https://player.vimeo.com/video/317918722' width=640 height=360 frameborder=0 allowfullscreen></iframe>
+    </div>
+{{/showintrovideo}}
+<div id="readalouddash">
+    {{#issinglecourse}}
+        {{#courses}}
+            <h3>{{{coursename}}}</h3>
+            {{>block_readaloudstudent/course}}
+        {{/courses}}
+    {{/issinglecourse}}
+
+    {{^issinglecourse}}
+        <h3 id="mycourses">{{#str}}myreadaloudflowers, block_readaloudstudent{{/str}}</h3>
+    <div id="courses-accordion">
+        {{#courses}}
+            {{>block_readaloudstudent/course-accordion}}
+        {{/courses}}
+        {{^courses}}<div class="alert alert-info">{{#str}}nocourses, block_readaloudstudent{{/str}}</div>{{/courses}}
+    </div>
+    {{/issinglecourse}}
+</div>

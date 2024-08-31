@@ -1,0 +1,12 @@
+<div class="course-accordion-wrapper" id="course-accordion-wrapper-{{courseid}}" data-courseid="{{courseid}}">
+    <div class="course-accordion-heading collapsed" id="course-heading-{{courseid}}" data-toggle="collapse" data-target="#course-collapse-{{courseid}}" aria-controls="course-collapse-{{courseid}}"{{#isexpanded}} aria-expanded="true"{{/isexpanded}}>
+        <span class="statusicon"></span>
+        <h3>{{{coursename}}}</h3>
+    </div>
+
+    <div id="course-collapse-{{courseid}}" class="course collapse{{#isexpanded}} show{{/isexpanded}}" aria-labelledby="{{{coursename}}}" data-parent="#courses-accordion" data-courseid="{{courseid}}">
+        <div class="card-body">
+            {{>block_readaloudstudent/course}}
+        </div>
+    </div>
+</div>

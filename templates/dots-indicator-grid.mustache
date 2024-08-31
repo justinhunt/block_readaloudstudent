@@ -1,0 +1,14 @@
+{{#progress-dots-indicator}}
+    <div id="dots-indicator-grid-{{courseid}}" data-complete="0" class="dots-indicator-grid"{{#extrawide}}
+         style="max-width: {{extrawide}};"{{/extrawide}}>
+        <div id="dots-grid">
+            {{#cells}}
+                <div id="progress-cell-{{cell-id}}" class="dots-col{{#iscomplete}} complete{{/iscomplete}}"></div>
+            {{/cells}}
+        </div>
+        <div id="completiontext-{{courseid}}" class="mt-2">
+            <sup>
+                <span id="complete-num-complete-{{courseid}}">{{complete-num}}</span></sup>/<sub><span id="complete-num-out-of-{{courseid}}">{{complete-outof}}</span></sub>&nbsp{{#str}}complete, block_readaloudstudent{{/str}}
+        </div>
+    </div>
+{{/progress-dots-indicator}}

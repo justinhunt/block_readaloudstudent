@@ -1,0 +1,27 @@
+<div class="col col-sm-4 recentattemptcols text-center"{{#readaloudid}} id="recentattemptcols-{{courseid}}"{{/readaloudid}}>
+    <div class="row">
+        {{#readaloudid}}
+        <div class="col col-sm-6 text-center">
+            <div class="dashheader">{{#str}}recentreading, block_readaloudstudent{{/str}}</div>
+                <h5>
+                    <a class="flowertile-header" href="{{wwwroot}}/mod/readaloud/view.php?n={{readaloudid}}">
+                    {{name}}
+                    </a>
+                </h5>
+            <span id="recent-attempt-flowerstats-{{attemptid}}">{{>block_readaloudstudent/flowerstats}}</span>
+                <div class="flowername mt-3">{{{flowerdisplayname}}}</div>
+
+        </div>
+        <div class="col col-sm-6 text-center">
+            <div id="mostrecentattempt">
+                <div  class="block_readaloudstudent_flowertile">
+                    <a href="{{wwwroot}}/mod/readaloud/view.php?n={{readaloudid}}">
+                    <img src="{{flowerpicurl}}" alt="{{{displayname}}}">
+                    </a>
+                </div>
+            </div>
+        </div>
+        </a>
+        {{/readaloudid}}
+    </div>
+</div>

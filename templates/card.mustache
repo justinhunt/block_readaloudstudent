@@ -1,0 +1,17 @@
+<div class="flowertile-outer text-center{{#extraclasses}} {{extraclasses}}{{/extraclasses}}" title ="{{name}}"
+     id="flower-card-{{courseid}}-{{cardindex}}" data-index="{{cardindex}}">
+    <div class="flower-tile-top">
+        <h5 class="p-1">
+            <a class="flowertile-header" href="{{wwwroot}}/mod/readaloud/view.php?n={{readaloudid}}">
+                {{name}}
+            </a>
+        </h5>
+        {{>block_readaloudstudent/flowerstats}}
+    </div>
+    <div class="block_readaloudstudent_flowertile">
+        <a href="{{wwwroot}}/mod/readaloud/view.php?n={{readaloudid}}">
+            <img src="{{flowerpicurl}}" alt="{{{displayname}}}">
+            <div class="flowername mt-3"><strong>{{{flowerdisplayname}}}</strong></div>
+        </a>
+    </div>
+</div>

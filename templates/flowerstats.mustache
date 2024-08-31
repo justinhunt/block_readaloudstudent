@@ -1,0 +1,19 @@
+<div class="flowerstats" data-readaloudid="{{readaloudid}}" data-courseid="{{courseid}}" data-cmid="{{cmid}}"
+    {{#attemptid}} data-attemptid="{{attemptid}}" data-aiwpm="{{ai_wpm}}"{{/attemptid}}>
+    {{^isdummy}}
+        <span title="{{#str}}wordsperminute, block_readaloudstudent{{/str}}">{{#pix}}tacho, block_readaloudstudent{{/pix}}
+            <span class="wpm-{{attemptid}}">
+                {{{ai_wpm}}}
+                {{^ai_wpm}}<span class="loading-icon">{{#pix}}i/loading_small, moodle{{/pix}}</span>{{/ai_wpm}}
+            </span>
+
+            {{#str}}wpm, block_readaloudstudent{{/str}}
+    </span>
+        <span title="{{#str}}quiz, block_readaloudstudent{{/str}}">
+        {{#pix}}star, block_readaloudstudent{{/pix}} {{#qscore}}{{{qscore}}}{{/qscore}}{{^qscore}}{{#pix}}i/loading_small, moodle{{/pix}}{{/qscore}}%
+    </span>
+    {{/isdummy}}
+    {{#isdummy}}
+        <span>{{#str}}notyetattempted, block_readaloudstudent{{/str}}</span>
+    {{/isdummy}}
+</div>

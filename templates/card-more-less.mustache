@@ -1,0 +1,17 @@
+<div class="flowertile-outer text-center more-less-card {{#ismore}}more-card{{/ismore}}{{^ismore}}less-card{{/ismore}}{{#extraclasses}} {{extraclasses}}{{/extraclasses}}"
+     title="{{#ismore}}{{#str}}showmore, block_readaloudstudent{{/str}}{{/ismore}}{{^ismore}}{{#str}}showless, block_readaloudstudent{{/str}}{{/ismore}}"
+     id="{{#ismore}}more-card{{/ismore}}{{^ismore}}less-card{{/ismore}}-{{courseid}}"
+     data-action="{{#ismore}}show-more{{/ismore}}{{^ismore}}show-less{{/ismore}}">
+    <div class="flower-tile-top"></div>
+    <div class="block_readaloudstudent_flowertile">
+        <div class="plusicon">
+            {{#ismore}}{{#pix}}plus, block_readaloudstudent{{/pix}}{{/ismore}}
+            {{^ismore}}{{#pix}}minus, block_readaloudstudent{{/pix}}{{/ismore}}
+        </div>
+        <div>
+            {{#ismore}}{{#str}}showmore, block_readaloudstudent{{/str}}{{/ismore}}
+            {{^ismore}}{{#str}}showless, block_readaloudstudent{{/str}}{{/ismore}}
+        </div>
+        <div class="flowername mt-3"></div>
+    </div>
+</div>

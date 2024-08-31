@@ -1,0 +1,26 @@
+<div class="indicator meter-indicator">
+    <div class="dashheader">{{name}}</div>
+    <div class="meter-wrapper">
+        <svg class="meter" id="meter-{{courseid}}-{{id}}" data-percent="0">
+            <circle class="circle outline outline-curves" cx="50%" fill="none" cy="0" r="{{meter-radius}}"
+                    stroke-width="{{meter-strokewidth}}px"
+                    stroke-dasharray="{{meter-circum-half}}, {{meter-circum}}">
+            </circle>
+            <circle class="circle-complete" cx="50%" fill="none" cy="0" r="{{meter-radius}}" stroke="#70d54a" stroke-width="{{meter-strokewidth-inner}}px"
+                    stroke-dasharray="{{meter-circum-half}}, {{meter-circum}}">
+            </circle>
+            <circle class="circle mask" cx="50%" cy="0" fill="none">
+            </circle>
+            <circle class="circle outline outline-ends" cx="50%" cy="0" fill="none"
+                    stroke-dasharray="2, {{meter-circum-half}}">
+            </circle>
+            <circle class="mask" cx="50%" cy="0" fill="none" r="{{meter-radius}}" stroke-width="{{meter-strokewidth}}px"
+                    stroke-dasharray="stroke-dasharray=" {{meter-circum-half}}, {{meter-circum}}"">
+            </circle>
+        </svg>
+        <img class="meter-needle" id="meter-needle-{{courseid}}-{{id}}" src="{{meter-needle-url}}">
+    </div>
+    <div class="mt-2 meter-legend"  id="meter-{{courseid}}-{{id}}-legend" style="display: none;">
+        <span id="meter-{{courseid}}-{{id}}-legend-val">0</span> {{legend}}
+    </div>
+</div>

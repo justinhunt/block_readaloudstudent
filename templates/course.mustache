@@ -1,0 +1,61 @@
+<div class="course-dash" id="course-dash-{{courseid}}" data-courseid="{{courseid}}">
+    <div class="row" id="dashtopsection">
+
+        <div class="col col-sm-2 text-center">
+            <div class="dashheader" id="totalwordsread">
+                {{#str}}totalwordsread, block_readaloudstudent{{/str}}
+            </div>
+            <div id="wordcount-{{courseid}}" class="course-word-count">
+                {{total-words-read}}
+            </div>
+            {{#nextreading}}
+                <div class="mt-3" id="nextreadingbtn">
+                    <a class="btn block_readaloudstudent_mynextreading" href="{{wwwroot}}/mod/readaloud/view.php?n={{nextreading}}">
+                    <i class="icon fa fa-play fa-fw " title="{{nextbuttontext}}" aria-label="{{nextbuttontext}}"></i>
+                    {{nextbuttontext}}
+                    </a>
+                </div>
+            {{/nextreading}}
+        </div>
+
+        {{#meters}}
+            <div class="col col-sm-2 text-center">
+                {{>block_readaloudstudent/meter}}
+            </div>
+        {{/meters}}
+
+        <div class="col col-sm-2 text-center">
+            <div class="dashheader" id="totalwordsread-{{courseid}}">
+                {{#str}}progress, block_readaloudstudent{{/str}}
+            </div>
+            {{#usedotspathindicator}}
+                {{>block_readaloudstudent/dots-indicator-path}}
+            {{/usedotspathindicator}}
+            {{^usedotspathindicator}}
+                {{>block_readaloudstudent/dots-indicator-grid}}
+            {{/usedotspathindicator}}
+        </div>
+        {{#mostrecentattempt}}
+            {{>block_readaloudstudent/recent-attempt}}
+        {{/mostrecentattempt}}
+
+    </div>
+    <div class="dash-bottom-sec">
+
+        <div class="block_readaloudstudent_flowertiles_container" id="flowertiles_container_{{courseid}}">
+            {{#cards}}
+                {{#ismoreless}}
+                    {{>block_readaloudstudent/card-more-less}}
+                {{/ismoreless}}
+                {{^ismoreless}}
+                    {{>block_readaloudstudent/card}}
+                {{/ismoreless}}
+            {{/cards}}
+
+            {{#showlesscard}}
+                {{>block_readaloudstudent/card-more-less}}
+            {{/showlesscard}}
+
+        </div>
+    </div>
+</div>
