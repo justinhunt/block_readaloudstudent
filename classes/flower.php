@@ -43,7 +43,11 @@ class flower{
     private $placeholderflowerurl=false;
 
     function __construct($context) {
+        global $PAGE;
         $this->context=$context;
+        if(AJAX_SCRIPT){
+            $PAGE->set_context($context);
+        }
     }
 
 
@@ -127,7 +131,7 @@ class flower{
     }
 
     public function get_placeholder_flower_url(){
-        global $CFG,$OUTPUT;
+        global $CFG,$OUTPUT,$PAGE;
         if( $this->placeholderflowerurl){
             return $this->placeholderflowerurl;
         }
@@ -185,6 +189,7 @@ class flower{
     }
 
     public function fetch_default_flowers(){
+        global $OUTPUT,$PAGE;
         
         $flowers = array(
             1=>array('id'=>1,'filename'=>'seedles', 'displayname'=>'Seedles'),
@@ -214,11 +219,11 @@ class flower{
             25=>array('id'=>25,'filename'=>'ninja','displayname'=>'Ninja'),
         );
 
-        return array_map(function($flower) {
-            global $OUTPUT;
-            $flower['picurl'] = $OUTPUT->image_url($flower['filename'], 'block_readaloudstudent')->out();
-            return $flower;
-        }, $flowers);
+        //Set the pic url
+        for ($i = 1; $i <= count($flowers); $i++) {
+            $flowers[$i]['picurl'] = $OUTPUT->image_url($flowers[$i]['filename'], 'block_readaloudstudent')->out();
+        }
+        return $flowers;
 
     }
 }

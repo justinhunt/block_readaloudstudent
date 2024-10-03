@@ -72,11 +72,10 @@ class block_readaloudstudent_edit_form extends block_edit_form {
         }else{
             $draftitemid = 0;
         }
-        
         $imageoptions = common::fetch_flowerimage_opts($this->block->context);
         file_prepare_draft_area($draftitemid, $this->block->context->id, constants::M_COMP, constants::FLOWERPICTURES_FILEAREA,$itemid,
                 $imageoptions);
-        $this->block->config->flowerpictures = $draftitemid;
+
 
         //placeholder flower
         if (!empty($this->block->config) && !empty($this->block->config->placeholderflower)) {
@@ -84,10 +83,17 @@ class block_readaloudstudent_edit_form extends block_edit_form {
         }else{
             $p_draftitemid = 0;
         }
-        
         $p_imageoptions = common::fetch_placeholderflower_opts($this->block->context);
         file_prepare_draft_area($p_draftitemid, $this->block->context->id, constants::M_COMP, constants::PLACEHOLDERFLOWER_FILEAREA,$itemid,
                 $p_imageoptions);
+
+        //If it's a new block it won't have config yet, create a one
+        if (!isset($this->block->config)) {
+            $this->block->config = new stdClass();
+        }
+
+        //Set the draft ids and carry on
+        $this->block->config->flowerpictures = $draftitemid;
         $this->block->config->placeholderflower = $p_draftitemid;
 
 
