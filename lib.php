@@ -20,7 +20,7 @@ use block_readaloudstudent\common;
 /**
  * ReadAloud Student Instances.
  *
- * @copyright 2024 Justin Hunt 
+ * @copyright 2024 Justin Hunt
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @package   block_readaloudstudent
  * @category  files
@@ -34,12 +34,9 @@ use block_readaloudstudent\common;
  * @return bool
  * @todo MDL-36050 improve capability check on stick blocks, so we can check user capability before sending images.
  */
-function block_readaloudstudent_pluginfile($course, $birecord_or_cm, $context, $filearea, $args, $forcedownload, array $options=array()) {
+function block_readaloudstudent_pluginfile($course, $birecordorcm, $context, $filearea, $args, $forcedownload, array $options=[]) {
     global $DB, $CFG, $USER;
 
-    if ($context->contextlevel != CONTEXT_BLOCK) {
-        send_file_not_found();
-    }
 
     // If block is in course context, then check if user has capability to access course.
     if ($context->get_course_context(false)) {
@@ -61,6 +58,11 @@ function block_readaloudstudent_pluginfile($course, $birecord_or_cm, $context, $
         // At this point there is no way to check SYSTEM context, so ignoring it.
     }
 
+    // Check if the filearea is customdefaultflower or customplaceholderflower
+    if ($filearea === constants::M_CUSTOMDEFAULTFLOWER_FILEAREA || $filearea === constants::M_CUSTOMPLACEHOLDERFLOWER_FILEAREA) {
+        return block_readaloudstudent_setting_file_serve($filearea, $args, $forcedownload,  $options);
+    }
+    //otherwise it should be flowerpictures or placeholderflower
     if ($filearea !== constants::FLOWERPICTURES_FILEAREA && $filearea !== constants::PLACEHOLDERFLOWER_FILEAREA ) {
         send_file_not_found();
     }
@@ -68,18 +70,18 @@ function block_readaloudstudent_pluginfile($course, $birecord_or_cm, $context, $
     $fs = get_file_storage();
 
     $filename = array_pop($args);
-   // $filepath = $args ? '/'.implode('/', $args).'/' : '/';
-    $filepath='/';
-    $itemid=1;
+    // $filepath = $args ? '/'.implode('/', $args).'/' : '/';
+    $filepath = '/';
+    $itemid = 1;
 
     if (!$file = $fs->get_file($context->id, constants::M_COMP, $filearea, $itemid, $filepath, $filename) or $file->is_directory()) {
         send_file_not_found();
     }
 
-    if ($parentcontext = context::instance_by_id($birecord_or_cm->parentcontextid, IGNORE_MISSING)) {
+    if ($parentcontext = context::instance_by_id($birecordorcm->parentcontextid, IGNORE_MISSING)) {
         if ($parentcontext->contextlevel == CONTEXT_USER) {
             // force download on all personal pages including /my/
-            //because we do not have reliable way to find out from where this is used
+            // because we do not have reliable way to find out from where this is used
             $forcedownload = true;
         }
     } else {
@@ -88,7 +90,7 @@ function block_readaloudstudent_pluginfile($course, $birecord_or_cm, $context, $
     }
 
     // NOTE: it woudl be nice to have file revisions here, for now rely on standard file lifetime,
-    //       do not lower it because the files are dispalyed very often.
+    // do not lower it because the files are dispalyed very often.
     \core\session\manager::write_close();
     send_stored_file($file, null, 0, $forcedownload, $options);
 }
@@ -115,4 +117,31 @@ function block_readaloudstudent_get_path_from_pluginfile(string $filearea, array
         'itemid' => 0,
         'filepath' => $filepath,
     ];
+}
+
+function block_readaloudstudent_setting_file_serve($filearea, $args, $forcedownload, $options) {
+    global $CFG;
+    require_once("$CFG->libdir/filelib.php");
+
+    $syscontext = context_system::instance();
+    $component = constants::M_COMP;
+
+    $revision = array_shift($args);
+    if ($revision < 0) {
+        $lifetime = 0;
+    } else {
+        $lifetime = 60 * 60 * 24 * 60;
+    }
+
+    $fs = get_file_storage();
+    $relativepath = implode('/', $args);
+
+    $fullpath = "/{$syscontext->id}/{$component}/{$filearea}/0/{$relativepath}";
+    $fullpath = rtrim($fullpath, '/');
+    if ($file = $fs->get_file_by_hash(sha1($fullpath))) {
+        send_stored_file($file, $lifetime, 0, $forcedownload, $options);
+        return true;
+    } else {
+        send_file_not_found();
+    }
 }

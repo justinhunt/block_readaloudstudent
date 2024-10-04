@@ -36,21 +36,14 @@ require('../../config.php');
 //fetch the blockid whose settings we should use
 $blockid = required_param('blockid',PARAM_INT);
 $courseid = required_param('courseid',PARAM_INT);
-$dosomething = optional_param('dosomething',0,PARAM_INT);
 
 //set the url of the $PAGE
 //note we do this before require_login preferably
 //so Moodle will send user back here if it bounces them off to login first
-$PAGE->set_url(constants::M_URL . '/view.php',array('blockid'=>$blockid, 'courseid'=>$courseid, 'dosomething'=>$dosomething));
+$PAGE->set_url(constants::M_URL . '/view.php',array('blockid'=>$blockid, 'courseid'=>$courseid));
 $course = get_course($courseid);
 require_login($course);
 
-
-if($dosomething){
-    common::do_something($blockid);
-    $redirecturl = new moodle_url( constants::M_URL . '/view.php',array('blockid'=>$blockid, 'courseid'=>$courseid));
-    redirect($redirecturl,get_string('didsomething', constants::M_COMP),10);
-}
 
 
 $coursecontext = context_course::instance($course->id);

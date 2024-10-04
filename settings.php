@@ -18,7 +18,7 @@
  * Block readaloudstudent
  *
  * @package    block_readaloudstudent
- * @copyright  Daniel Neis <danielneis@gmail.com>
+ * @copyright  Justin Hunt <justin@poodll.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -37,22 +37,44 @@ if ($ADMIN->fulltree) {
         get_string('maxpercourse_desc', constants::M_COMP),
         0, PARAM_INT));
 
-    $options= common::fetch_showcourses_options();
+    $options = common::fetch_showcourses_options();
     $settings->add(new admin_setting_configselect(constants::M_COMP . '/showcourses',
         get_string('showcourses', constants::M_COMP),
         get_string('showcourses_desc', constants::M_COMP),
-        constants::M_THISCOURSE,$options));
+        constants::M_THISCOURSE, $options));
 
-    $options= common::fetch_showreadings_options();
+    $options = common::fetch_showreadings_options();
     $settings->add(new admin_setting_configselect(constants::M_COMP . '/showreadings',
         get_string('showreadings', constants::M_COMP),
         get_string('showreadings_desc', constants::M_COMP),
-        constants::M_SHOWALLREADINGS,$options));
+        constants::M_SHOWALLREADINGS, $options));
 
-    $options= common::fetch_forcesequence_options();
+    $options = common::fetch_forcesequence_options();
     $settings->add(new admin_setting_configselect(constants::M_COMP . '/forcesequence',
         get_string('forcesequence', constants::M_COMP),
         get_string('forcesequence_desc', constants::M_COMP),
-        constants::M_FORCESEQUENCE,$options));
+        constants::M_FORCESEQUENCE, $options));
 
+    $settings->add(new admin_setting_configtext(constants::M_COMP . '/introvideoid',
+        get_string('introvideoid', constants::M_COMP),
+        get_string('introvideoid_desc', constants::M_COMP),
+        '317918722', PARAM_TEXT));
+
+    // Custom Default Place holder flower.
+
+        $name = constants::M_COMP . '/customplaceholderflower';
+        $title = get_string('customplaceholderflower', constants::M_COMP);
+        $description = get_string('customplaceholderflower', constants::M_COMP);
+        $settings->add(new admin_setting_configstoredfile($name,
+         $title, $description,
+         constants::M_CUSTOMPLACEHOLDERFLOWER_FILEAREA , 0));
+
+    // Default flowers.
+    $slots = constants::M_DEFAULTFLOWERSLOTS;
+    foreach ($slots as $slot) {
+        $name = constants::M_COMP . '/flower' . $slot;
+        $title = get_string('customdefaultflower', constants::M_COMP, $slot);
+        $description = get_string('customdefaultflower', constants::M_COMP, $slot);
+        $settings->add(new admin_setting_configstoredfile($name, $title, $description, constants::M_CUSTOMDEFAULTFLOWER_FILEAREA,$slot));
+    }
 }

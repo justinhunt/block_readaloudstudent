@@ -30,7 +30,7 @@ use block_readaloudstudent\common;
 class block_readaloudstudent extends block_base {
 
     function init() {
-        $this->title = ''; //get_string('myreadaloudflowers', constants::M_COMP);
+        $this->title = ''; // get_string('myreadaloudflowers', constants::M_COMP);
     }
 
     function get_content() {
@@ -46,26 +46,25 @@ class block_readaloudstudent extends block_base {
         }
 
         $this->content = new stdClass();
-        $this->content->items = array();
-        $this->content->icons = array();
+        $this->content->items = [];
+        $this->content->icons = [];
         $this->content->footer = '';
         $this->content->text = '';
 
-        //get the course this block is on
+        // get the course this block is on
         $course = $this->page->course;
 
-
-        //get the block instance settings (position , id  etc)
+        // get the block instance settings (position , id  etc)
         $instancesettings = $this->instance;
 
-        //get the admin config (that we define in settings.php)
+        // get the admin config (that we define in settings.php)
         $adminconfig = get_config(constants::M_COMP);
-        //get the instance config (that we define in edit_form)
+        // get the instance config (that we define in edit_form)
         $localconfig = $this->config;
-        //get best config. our helper class to merge local and admin configs
+        // get best config. our helper class to merge local and admin configs
         $bestconfig = common::fetch_best_config($instancesettings->id);
 
-        //get the courses we will show for this user
+        // get the courses we will show for this user
         switch($bestconfig->showcourses){
             case constants::M_THISCOURSE:
                 $courses = [$course];
@@ -82,19 +81,19 @@ class block_readaloudstudent extends block_base {
 
         }
 
-        //for each course get the set of attempts
-        $coursedata =array();
-        if($courses){
-            foreach($courses as $course){
-                $thecourse =new \stdClass();
+        // for each course get the set of attempts
+        $coursedata = [];
+        if ($courses) {
+            foreach ($courses as $course) {
+                $thecourse = new \stdClass();
                 $thecourse->courseid = $course->id;
-                $thecourse->fullname=$course->fullname;
-                $thecourse->attemptdata = $this->override_with_human_grade_if_present(common::fetch_user_readings($USER->id,$course->id,$this->context));
-                $thecourse->allreadings=common::fetch_course_readings($course->id);
-                $thecourse->nextreading=common::fetch_next_reading($USER->id,$course->id,$thecourse->attemptdata);
+                $thecourse->fullname = $course->fullname;
+                $thecourse->attemptdata = common::override_with_human_grade_if_present(common::fetch_user_readings($USER->id, $course->id, $this->context));
+                $thecourse->allreadings = common::fetch_course_readings($course->id);
+                $thecourse->nextreading = common::fetch_next_reading($USER->id, $course->id, $thecourse->attemptdata);
                 $thecourse->id = $course->id;
                 $coursedata[$course->id] = $thecourse;
-                foreach($thecourse->attemptdata as $attempt) {
+                foreach ($thecourse->attemptdata as $attempt) {
                     $attempt->h_wpm = "33";
                 }
             }
@@ -106,39 +105,21 @@ class block_readaloudstudent extends block_base {
         return $this->content;
     }
 
-
-    /**
-     * If a human has entered a grade to override the AI WPM grade it will be in h_wpm.
-     * Use it if present and ignore the AI one.
-     * @param object $attemptdata
-     * @return object
-     */
-    private function override_with_human_grade_if_present($attemptdata) {
-        foreach ($attemptdata as $attempt) {
-            if ($attempt->h_wpm) {
-                $attempt->ai_wpm = $attempt->h_wpm;
-                $attempt->ai_accuracy = $attempt->h_accuracy;
-                $attempt->ai_totalwordread = $attempt->h_totalwordsread;
-            }
-        }
-        return $attemptdata;
-    }
-
-    //This is a list of places where the block may or may not be added by the admin
+    // This is a list of places where the block may or may not be added by the admin
     public function applicable_formats() {
-        return array(
-            'all' => false,
+        return [
+             'all' => false,
             'site' => true,
             'site-index' => true,
-            'course-view' => false,
+            'course-view' => true,
             'course-view-social' => false,
-            'mod' => false,
+            'mod' => true,
             'mod-quiz' => false,
-            'my'=>true
-        );
+            'my' => true,
+        ];
     }
 
-    //Can we have more than one instance of the block?
+    // Can we have more than one instance of the block?
     public function instance_allow_multiple() {
           return true;
     }
@@ -147,9 +128,11 @@ class block_readaloudstudent extends block_base {
         return true;
     }
 
-    function has_config() {return true;}
+    function has_config() {
+        return true;
+    }
 
-    
+
     /**
      * Serialize and store config data
      */
@@ -158,14 +141,14 @@ class block_readaloudstudent extends block_base {
 
         $config = clone($data);
         // Move embedded files into a proper filearea
-        $itemid=1;
-        //flower pics
+        $itemid = 1;
+        // flower pics
         $imageoptions = common::fetch_flowerimage_opts($this->context);
         $config->flowerpictures = file_save_draft_area_files($data->flowerpictures, $this->context->id, constants::M_COMP, constants::FLOWERPICTURES_FILEAREA, $itemid, $imageoptions);
-        //placeholder flower
-        $p_imageoptions = common::fetch_placeholderflower_opts($this->context);
-        $config->placeholderflower = file_save_draft_area_files($data->placeholderflower, $this->context->id, constants::M_COMP, constants::PLACEHOLDERFLOWER_FILEAREA, $itemid, $p_imageoptions);
-        
+        // placeholder flower
+        $pimageoptions = common::fetch_placeholderflower_opts($this->context);
+        $config->placeholderflower = file_save_draft_area_files($data->placeholderflower, $this->context->id, constants::M_COMP, constants::PLACEHOLDERFLOWER_FILEAREA, $itemid, $pimageoptions);
+
         parent::instance_config_save($config, $nolongerused);
     }
 
@@ -185,8 +168,8 @@ class block_readaloudstudent extends block_base {
         $fromcontext = context_block::instance($fromid);
         $fs = get_file_storage();
         // Do not use draft files hacks outside of forms.
-        $itemid=1;
-        $fileareas=[constants::FLOWERPICTURES_FILEAREA,constants::PLACEHOLDERFLOWER_FILEAREA];
+        $itemid = 1;
+        $fileareas = [constants::FLOWERPICTURES_FILEAREA, constants::PLACEHOLDERFLOWER_FILEAREA];
         foreach($fileareas as $filearea){
             $files = $fs->get_area_files($fromcontext->id, constants::M_COMP, $filearea, $itemid, 'id ASC', false);
             foreach ($files as $file) {
@@ -203,7 +186,7 @@ class block_readaloudstudent extends block_base {
         if (!$context = context::instance_by_id($this->instance->parentcontextid, IGNORE_MISSING)) {
             return false;
         }
-        //find out if this block is on the profile page
+        // find out if this block is on the profile page
         if ($context->contextlevel == CONTEXT_USER) {
             if ($SCRIPT === '/my/index.php') {
                 // this is exception - page is completely private, nobody else may see content there

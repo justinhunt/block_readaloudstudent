@@ -36,8 +36,8 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright 2019 David Watson http://evolutioncode.uk
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class block implements \renderable, \templatable
-{
+class block implements \renderable, \templatable {
+
     /**
      * The course data including all activities and attempts.
      * @var array
@@ -64,8 +64,7 @@ class block implements \renderable, \templatable
      * @param array $coursesdata the attempt and other data for each course being displayed.
      * @param object $bestconfig the user's block config
      */
-    public function __construct($coursesdata, $bestconfig,$context)
-    {
+    public function __construct($coursesdata, $bestconfig, $context) {
         $this->coursesdata = $coursesdata;
         $this->bestconfig = $bestconfig;
         $this->context = $context;
@@ -87,20 +86,20 @@ class block implements \renderable, \templatable
         foreach($this->bestconfig as $k => $v) {
             $data['config'][$k] = $v;
         }
-        $flower= new \block_readaloudstudent\flower($this->context);
+        $flower = new \block_readaloudstudent\flower($this->context);
         $data['wwwroot'] = $CFG->wwwroot;
         $data['courses'] = [];
-        $data['showdummycards'] = $this->bestconfig->showreadings == constants::M_SHOWALLREADINGS; //otherwise just show the completed ones.
+        $data['showdummycards'] = $this->bestconfig->showreadings == constants::M_SHOWALLREADINGS; // otherwise just show the completed ones.
         $hasnoattempts = true; // Overwritten if activities complete.
         $dummycardurl = $flower->get_placeholder_flower_url();
         foreach ($this->coursesdata as $singlecoursedata) {
 
             // We need to find the most recently completed attempt as we process the attempts.
-            $mostrecentattempt =  new \stdClass();
+            $mostrecentattempt = new \stdClass();
             $mostrecentattempt->timemodified = 0;
 
             if ($data['showdummycards']) {
-            // We are showing all course modules, whether they have attempts or not.
+                // We are showing all course modules, whether they have attempts or not.
                 $attemptdatabyinstanceid = $this->attempt_data_by_instance_id($singlecoursedata->attemptdata);
                 $cardsthiscourse = [];
                 $index = 1;
@@ -120,26 +119,26 @@ class block implements \renderable, \templatable
                         $hasnoattempts = false;
                     } else {
                         // No attempt so we will have a dummy card to represent the course module without an attempt.
-                        $cardsthiscourse[] = array(
+                        $cardsthiscourse[] = [
                             'name' => $singlecoursemodule['name'],
                             'readaloudid' => $singlecoursemodule['instance'],
                             'flowerpicurl' => $dummycardurl,
                             'isdummy' => '1',
                             'cardindex' => $index,
-                            'extraclasses' => $index > $this->hidecardsafterindex ? 'hidden' : ''
-                        );
+                            'extraclasses' => $index > $this->hidecardsafterindex ? 'hidden' : '',
+                        ];
                     }
                     if ($index === $this->hidecardsafterindex && count($singlecoursedata->allreadings) > $this->hidecardsafterindex) {
                         // We add a "show more" card here.
-                        $cardsthiscourse[] = array('ismoreless' => 1, 'ismore' => 1);
+                        $cardsthiscourse[] = ['ismoreless' => 1, 'ismore' => 1];
                     }
                     $index++;
                 }
-                $coursedata = array(
+                $coursedata = [
                     'coursename' => $singlecoursedata->fullname,
                     'courseid' => $singlecoursedata->courseid,
-                    'cards' => $cardsthiscourse
-                );
+                    'cards' => $cardsthiscourse,
+                ];
             } else {
                 // We are not showing all course modules, only attempts.
                 $attempts = $this->attempts_data_transform_to_cards($singlecoursedata->attemptdata);
@@ -149,11 +148,11 @@ class block implements \renderable, \templatable
                     }
                     $hasnoattempts = false; // No need now - they have activities.
                 }
-                $coursedata = array (
+                $coursedata = [
                     'coursename' => $singlecoursedata->fullname,
                     'nextreading' => $singlecoursedata->nextreading,
-                    'cards' => $attempts
-                );
+                    'cards' => $attempts,
+                ];
             }
             $coursedata['nextreading'] = $singlecoursedata->nextreading;
             $coursedata['complete-num'] = 0; // We will animate this to the real value in JS.
@@ -169,27 +168,28 @@ class block implements \renderable, \templatable
             $coursedata['mostrecentattempt'] = $this->attempt_data_transform_to_card($mostrecentattempt);
             if ($hasnoattempts) {
                 $data['showintrovideo'] = true;
+                $data['introvideoid'] = $this->bestconfig->introvideoid;
                 $data['total-words-read'] = "0";
                 $data['nextbuttontext'] = get_string('myfirstreading', 'block_readaloudstudent');
             } else {
                 $data['nextbuttontext'] = get_string('mynextreading', 'block_readaloudstudent');
             }
-            $data['showlesscard'] = array('ismore' => 0, 'extraclasses' => 'hidden');
+            $data['showlesscard'] = ['ismore' => 0, 'extraclasses' => 'hidden'];
             $data['courses'][] = $coursedata;
         }
 
         $data['issinglecourse'] = count($data['courses']) === 1;
         $data['meters'] = [
-            array(
+            [
                 'id' => '1',
                 'name' => get_string('averagewpm', 'block_readaloudstudent'),
-                'legend' => get_string('wpm', 'block_readaloudstudent')
-            ),
-            array(
+                'legend' => get_string('wpm', 'block_readaloudstudent'),
+            ],
+            [
                 'id' => '2',
                 'name' => get_string('averageaccuracy', 'block_readaloudstudent'),
-                'legend' => "%"
-            )
+                'legend' => "%",
+            ],
         ];
         $data['meter-needle-url'] = $OUTPUT->image_url('meter-needle', 'block_readaloudstudent')->out();
         $data['meter-strokewidth'] = 20;
@@ -210,7 +210,7 @@ class block implements \renderable, \templatable
     private function dots_indicator($numcomplete, $numoutof) {
         $indicator = [
             'extrawide' => 0,
-            'cells' => []
+            'cells' => [],
         ];
         // Allow very large numbers to show without messing up display.
         if ($numoutof > 20) {
@@ -223,10 +223,10 @@ class block implements \renderable, \templatable
         }
         for ($cell = 1; $cell <= $numoutof; $cell++) {
             if ($cell <= $numoutof) {
-                $indicator['cells'][] = array(
+                $indicator['cells'][] = [
                     'cell-id' => $cell,
-                    'complete' => $cell <= (int)$numcomplete ? 1 : 0
-                );
+                    'complete' => $cell <= (int)$numcomplete ? 1 : 0,
+                ];
             }
         }
         return $indicator;
@@ -248,7 +248,7 @@ class block implements \renderable, \templatable
             $cards[] = $attempt;
             if ($index === $this->hidecardsafterindex && count($attemptdata) > $this->hidecardsafterindex) {
                 // We add a "show more" card here.
-                $cards[] = array('ismoreless' => 1, 'ismore' => 1);
+                $cards[] = ['ismoreless' => 1, 'ismore' => 1];
             }
             $index++;
         }

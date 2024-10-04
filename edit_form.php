@@ -24,80 +24,81 @@ class block_readaloudstudent_edit_form extends block_edit_form {
         // Section header title according to language file.
         $mform->addElement('header', 'configheader', get_string('blocksettings', 'block'));
 
-        //get admin settings config
-        $config =get_config(constants::M_COMP);
+        // get admin settings config
+        $config = get_config(constants::M_COMP);
 
          // Section header title according to language file.
-         if(isset($this->block->instance->id)){
-            $mform->addElement('static', 'blockinstanceid', get_string('blockinstanceid', constants::M_COMP),$this->block->instance->id);
-         }
+        if(isset($this->block->instance->id)){
+            $mform->addElement('static', 'blockinstanceid', get_string('blockinstanceid', constants::M_COMP), $this->block->instance->id);
+        }
 
         // A sample string variable with a default value.
-        //we need to prefix all our settings with config_ for the block to do its magic of saving and fetching them
-        //for us
+        // we need to prefix all our settings with config_ for the block to do its magic of saving and fetching them
+        // for us
         $mform->addElement('text', 'config_maxpercourse', get_string('maxpercourse', constants::M_COMP));
         $mform->setDefault('config_maxpercourse', $config->maxpercourse);
         $mform->setType('config_maxpercourse', PARAM_INT);
 
         $options = common::fetch_showcourses_options();
-        $mform->addElement('select', 'config_showcourses', get_string('showcourses', constants::M_COMP),$options);
-        $mform->setDefault('config_showcourses',$config->showcourses);
+        $mform->addElement('select', 'config_showcourses', get_string('showcourses', constants::M_COMP), $options);
+        $mform->setDefault('config_showcourses', $config->showcourses);
 
         $options = common::fetch_showreadings_options();
-        $mform->addElement('select', 'config_showreadings', get_string('showreadings', constants::M_COMP),$options);
-        $mform->setDefault('config_showreadings',$config->showreadings);
+        $mform->addElement('select', 'config_showreadings', get_string('showreadings', constants::M_COMP), $options);
+        $mform->setDefault('config_showreadings', $config->showreadings);
 
         $options = common::fetch_forcesequence_options();
-        $mform->addElement('select', 'config_forcesequence', get_string('forcesequence', constants::M_COMP),$options);
-        $mform->setDefault('config_forcesequence',$config->forcesequence);
+        $mform->addElement('select', 'config_forcesequence', get_string('forcesequence', constants::M_COMP), $options);
+        $mform->setDefault('config_forcesequence', $config->forcesequence);
 
-        //Flower pictures
+        // Flower pictures.
         $imageoptions = common::fetch_flowerimage_opts($this->block->context);
-        $mform->addElement('filemanager', 'config_flowerpictures', get_string('flowerpictures',constants::M_COMP), null, $imageoptions);
+        $mform->addElement('filemanager', 'config_flowerpictures', get_string('flowerpictures', constants::M_COMP), null, $imageoptions);
 
-         //Flower pictures
-        $p_imageoptions = common::fetch_placeholderflower_opts($this->block->context);
-        $mform->addElement('filemanager', 'config_placeholderflower', get_string('placeholderflower',constants::M_COMP), null, $p_imageoptions);
+         // Flower pictures.
+        $pimageoptions = common::fetch_placeholderflower_opts($this->block->context);
+        $mform->addElement('filemanager', 'config_placeholderflower', get_string('placeholderflower', constants::M_COMP), null, $pimageoptions);
 
-
+        // The introduction video vimeo id (for when the user has not completed any readings yet).
+        $mform->addElement('text', 'config_introvideoid', get_string('introvideoid', constants::M_COMP));
+        $mform->setDefault('config_introvideoid', $config->introvideoid);
+        $mform->setType('config_introvideoid', PARAM_TEXT);
 
     }
 
     function set_data($defaults) {
-        $itemid=1;
+        $itemid = 1;
 
-        //flower pictures
+        // flower pictures
         if (!empty($this->block->config) && !empty($this->block->config->flowerpictures)) {
             $draftitemid = file_get_submitted_draft_itemid('config_flowerpictures');
-        }else{
+        } else {
             $draftitemid = 0;
         }
         $imageoptions = common::fetch_flowerimage_opts($this->block->context);
-        file_prepare_draft_area($draftitemid, $this->block->context->id, constants::M_COMP, constants::FLOWERPICTURES_FILEAREA,$itemid,
+        file_prepare_draft_area($draftitemid, $this->block->context->id, constants::M_COMP, constants::FLOWERPICTURES_FILEAREA, $itemid,
                 $imageoptions);
 
-
-        //placeholder flower
+        // placeholder flower
         if (!empty($this->block->config) && !empty($this->block->config->placeholderflower)) {
-            $p_draftitemid = file_get_submitted_draft_itemid('config_placeholderflower');
-        }else{
-            $p_draftitemid = 0;
+            $pdraftitemid = file_get_submitted_draft_itemid('config_placeholderflower');
+        } else {
+            $pdraftitemid = 0;
         }
-        $p_imageoptions = common::fetch_placeholderflower_opts($this->block->context);
-        file_prepare_draft_area($p_draftitemid, $this->block->context->id, constants::M_COMP, constants::PLACEHOLDERFLOWER_FILEAREA,$itemid,
-                $p_imageoptions);
+        $pimageoptions = common::fetch_placeholderflower_opts($this->block->context);
+        file_prepare_draft_area($pdraftitemid, $this->block->context->id, constants::M_COMP, constants::PLACEHOLDERFLOWER_FILEAREA, $itemid,
+                $pimageoptions);
 
-        //If it's a new block it won't have config yet, create a one
+        // If it's a new block it won't have config yet, create a one
         if (!isset($this->block->config)) {
             $this->block->config = new stdClass();
         }
 
-        //Set the draft ids and carry on
+        // Set the draft ids and carry on
         $this->block->config->flowerpictures = $draftitemid;
-        $this->block->config->placeholderflower = $p_draftitemid;
-
+        $this->block->config->placeholderflower = $pdraftitemid;
 
         parent::set_data($defaults);
- 
+
     }
 }
